@@ -246,7 +246,6 @@
                 .then(response => response.json())
                 .then(data => {
                     const checklist = document.getElementById("checklist");
-                    checklist.innerHTML = "";
                     if (data[ahj]) {
                         data[ahj].forEach(item => {
                             const label = document.createElement("label");
@@ -261,27 +260,7 @@
                 });
         }
 
-        // Function to handle state selection
-        function updateStateRequirements() {
-            const state = document.getElementById("state").value;
-            fetch("default_checklist.json") // Fetch default checklist based on state
-                .then(response => response.json())
-                .then(data => {
-                    const checklist = document.getElementById("checklist");
-                    checklist.innerHTML = "";
-                    if (data[state]) {
-                        data[state].forEach(item => {
-                            const label = document.createElement("label");
-                            label.classList.add("state-text", "checklist-item");
-                            const checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-                            label.appendChild(checkbox);
-                            label.appendChild(document.createTextNode(item));
-                            checklist.appendChild(label);
-                        });
-                    }
-                });
-        }
+        // Functions for other dropdowns...
     </script>
 </body>
 </html>
