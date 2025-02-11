@@ -139,16 +139,23 @@
                     const checklist = document.getElementById("checklist");
                     checklist.innerHTML = ""; // Clear any existing checklist items
                     if (data) {
-                        // Assuming the data is an array of items
-                        data.forEach(item => {
-                            const label = document.createElement("label");
-                            label.classList.add("state-text", "checklist-item");
-                            const checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-                            label.appendChild(checkbox);
-                            label.appendChild(document.createTextNode(item));
-                            checklist.appendChild(label);
-                        });
+                        // Iterate over each section in the checklist JSON
+                        for (const section in data) {
+                            const sectionTitle = document.createElement("h4");
+                            sectionTitle.textContent = section;
+                            checklist.appendChild(sectionTitle);
+                            
+                            // Iterate over the checklist items in each section
+                            data[section].forEach(item => {
+                                const label = document.createElement("label");
+                                label.classList.add("state-text", "checklist-item");
+                                const checkbox = document.createElement("input");
+                                checkbox.type = "checkbox";
+                                label.appendChild(checkbox);
+                                label.appendChild(document.createTextNode(item));
+                                checklist.appendChild(label);
+                            });
+                        }
                     }
                 })
                 .catch(error => console.error("Error loading default checklist:", error));
