@@ -125,6 +125,9 @@
             <h3>Checklist</h3>
             <div id="checklist" class="checklist-container"></div>
         </div>
+
+        <!-- Reset Button -->
+        <button onclick="resetChecklist()">Reset Checklist</button>
     </div>
 
     <script>
@@ -153,6 +156,11 @@
 
         // Initial load of the default checklist when the page loads
         window.onload = loadDefaultChecklist;
+
+        // Reset the checklist back to the default checklist
+        function resetChecklist() {
+            loadDefaultChecklist(); // Simply reload the default checklist
+        }
 
         // Update company best practices based on selection
         function updateCompanyPractices() {
