@@ -128,10 +128,36 @@
     </div>
 
     <script>
+        // Function to load the default checklist (default_checklist.json)
+        function loadDefaultChecklist() {
+            fetch("default_checklist.json") // Load default checklist JSON
+                .then(response => response.json())
+                .then(data => {
+                    const checklist = document.getElementById("checklist");
+                    checklist.innerHTML = ""; // Clear any existing checklist items
+                    if (data) {
+                        // Assuming the data is an array of items
+                        data.forEach(item => {
+                            const label = document.createElement("label");
+                            label.classList.add("state-text", "checklist-item");
+                            const checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            label.appendChild(checkbox);
+                            label.appendChild(document.createTextNode(item));
+                            checklist.appendChild(label);
+                        });
+                    }
+                })
+                .catch(error => console.error("Error loading default checklist:", error));
+        }
+
+        // Initial load of the default checklist when the page loads
+        window.onload = loadDefaultChecklist;
+
         // Update company best practices based on selection
         function updateCompanyPractices() {
             const company = document.getElementById("company").value;
-            fetch("companyPractices.json") // Corrected JSON file name
+            fetch("companyPractices.json")
                 .then(response => response.json())
                 .then(data => {
                     const section = document.getElementById("company-best-practices");
@@ -153,7 +179,7 @@
         // Update AHJ requirements based on selection
         function updateAHJRequirements() {
             const ahj = document.getElementById("ahj").value;
-            fetch("ahj_requirements.json") // JSON file for AHJ requirements
+            fetch("ahj_requirements.json")
                 .then(response => response.json())
                 .then(data => {
                     const checklist = document.getElementById("checklist");
@@ -172,10 +198,10 @@
                 });
         }
 
-        // Function to handle state selection (add as needed)
+        // Function to handle state selection
         function updateStateRequirements() {
             const state = document.getElementById("state").value;
-            fetch("default_checklist.json") // JSON file for state requirements
+            fetch("default_checklist.json") // Fetch default checklist based on state
                 .then(response => response.json())
                 .then(data => {
                     const checklist = document.getElementById("checklist");
@@ -194,49 +220,7 @@
                 });
         }
 
-        // Function to handle utility requirements (add as needed)
-        function updateUtilityRequirements() {
-            const utility = document.getElementById("utility").value;
-            fetch("utility_requirements.json") // JSON file for utility requirements
-                .then(response => response.json())
-                .then(data => {
-                    const checklist = document.getElementById("checklist");
-                    checklist.innerHTML = "";
-                    if (data[utility]) {
-                        data[utility].forEach(item => {
-                            const label = document.createElement("label");
-                            label.classList.add("utility-text", "checklist-item");
-                            const checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-                            label.appendChild(checkbox);
-                            label.appendChild(document.createTextNode(item));
-                            checklist.appendChild(label);
-                        });
-                    }
-                });
-        }
-
-        // Function to handle interconnection requirements (add as needed)
-        function updateInterconnectionRequirements() {
-            const interconnection = document.getElementById("interconnection").value;
-            fetch("interconnection_requirements.json") // JSON file for interconnection requirements
-                .then(response => response.json())
-                .then(data => {
-                    const checklist = document.getElementById("checklist");
-                    checklist.innerHTML = "";
-                    if (data[interconnection]) {
-                        data[interconnection].forEach(item => {
-                            const label = document.createElement("label");
-                            label.classList.add("interconnection-text", "checklist-item");
-                            const checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-                            label.appendChild(checkbox);
-                            label.appendChild(document.createTextNode(item));
-                            checklist.appendChild(label);
-                        });
-                    }
-                });
-        }
+        // Additional functions for utility and interconnection would go here...
     </script>
 </body>
 </html>
