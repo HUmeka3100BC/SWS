@@ -1,266 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-            background: #1e1e1e;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #ffffff;
-        }
-        .dropdowns {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: flex-start; /* Align the dropdowns to the left */
-            margin-bottom: 20px;
-        }
-        .section {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start; /* Align text and labels to the left */
-        }
-        label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            color: #ffffff; /* Make label text white */
-        }
-        select {
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            text-align: center;
-        }
-        #company { background-color: #228B22; color: white; }
-        #ahj { background-color: #B22222; color: white; }
-        #state { background-color: #FFD700; color: black; }
-        #utility { background-color: #1E90FF; color: white; }
-        #interconnection { background-color: #FF8C00; color: white; }
-        .checklist-container {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-top: 10px; /* Reduced space between checklist and title */
-        }
-        .checklist-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin: 0; /* Remove margin between checklist items */
-            padding: 2px 0; /* Add some padding for readability */
-        }
-        .checklist-item input {
-            margin: 0; /* Remove margin around checkboxes */
-        }
-        /* Ensure all checklist text is white by default */
-        .checklist-item {
-            color: white; /* Override any previous color settings to make text white */
-        }
-
-        .company-text { color: #32CD32; }
-        .ahj-text { color: #FF6347; }
-        .utility-text { color: #1E90FF; }
-        .state-text { color: #FFD700; }
-        .interconnection-text { color: #FF8C00; }
-
-        /* Styling for the reset button */
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-
-        /* Remove margin from section titles */
-        h4 {
-            margin: 5px 0; /* Remove large space between section title and items */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checklist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h2>Checklist</h2>
-        
-        <div class="dropdowns">
-            <div class="section">
-                <label for="company">Company:</label>
-                <select id="company" onchange="updateCompanyPractices()">
-                    <option selected disabled>COMPANY</option>
-                    <option value="CITADEL">CITADEL</option>
-                    <option value="NORTH VALLEY">NORTH VALLEY</option>
-                </select>
-            </div>
-            <div class="section">
-                <label for="ahj">AHJ:</label>
-                <select id="ahj" onchange="updateAHJRequirements()">
-                    <option selected disabled>AHJ</option>
-                    <option value="Fresno">Fresno</option>
-                    <option value="San Diego">San Diego</option>
-                </select>
-            </div>
-            <div class="section">
-                <label for="state">State:</label>
-                <select id="state" onchange="updateStateRequirements()">
-                    <option selected disabled>STATE</option>
-                    <option value="CA">California</option>
-                    <option value="TX">Texas</option>
-                </select>
-            </div>
-            <div class="section">
-                <label for="utility">Utility:</label>
-                <select id="utility" onchange="updateUtilityRequirements()">
-                    <option selected disabled>UTILITY</option>
-                    <option value="PG&E">PG&E</option>
-                    <option value="SCE">SCE</option>
-                </select>
-            </div>
-            <div class="section">
-                <label for="interconnection">Interconnection:</label>
-                <select id="interconnection" onchange="updateInterconnectionRequirements()">
-                    <option selected disabled>INTERCONNECTION</option>
-                    <option value="NET METERING">Net Metering</option>
-                </select>
-            </div>
-        </div>
-        
-        <div class="section">
-            <h3>Company Best Practices</h3>
-            <div id="company-best-practices" class="checklist-container"></div>
-        </div>
 
-        <div class="section">
-            <h3>Checklist</h3>
-            <div id="checklist" class="checklist-container"></div>
-        </div>
+<body class="bg-black p-6 text-white">
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6">
+    <h1 class="text-2xl font-bold mb-4 text-left">Checklist</h1>
 
-        <!-- Reset Button -->
-        <button onclick="resetChecklist()">Reset Checklist</button>
+    <!-- Dropdown Menus -->
+    <div class="flex space-x-4 mb-6">
+      <div class="w-1/4">
+        <label class="block text-gray-300 font-medium mb-2 text-sm">Select Company:</label>
+        <select id="companyDropdown" class="w-full p-2 border rounded-md bg-gray-700 text-green-400">
+          <option>Select Company</option>
+          <option>SAMEDAY</option>
+          <option>NORTH VALLEY</option>
+          <option>CITADEL</option>
+          <option>THRIVE</option>
+        </select>
+      </div>
+      <div class="w-1/4">
+        <label class="block text-gray-300 font-medium mb-2 text-sm">Select AHJ:</label>
+        <select id="ahjDropdown" class="w-full p-2 border rounded-md bg-gray-700 text-blue-400">
+          <option>Select AHJ</option>
+          <option>AHJ A</option>
+        </select>
+      </div>
+      <div class="w-1/4">
+        <label class="block text-gray-300 font-medium mb-2 text-sm">Select Utility:</label>
+        <select id="utilityDropdown" class="w-full p-2 border rounded-md bg-gray-700 text-red-400">
+          <option>Select Utility</option>
+          <option>Utility A</option>
+        </select>
+      </div>
+      <div class="w-1/4">
+        <label class="block text-gray-300 font-medium mb-2 text-sm">Select Battery:</label>
+        <select id="BatteryDropdown" class="w-full p-2 border rounded-md bg-gray-700 text-yellow-400">
+          <option>Select Battery</option>
+          <option>POWERWALL 3</option>
+          <option>ENPHASE</option>
+          <option>SOLAREDGE</option>
+        </select>
+      </div>
     </div>
 
-    <!-- Embedding the JSON data inside a <script> tag -->
-    <script type="application/json" id="default-checklist-data">
-        {
-            "COMPANY BEST PRACTICES": [],
-            "MODEL SPACE": [
-                "FILL OUT DWG PROPS UTC", "AZIMUTH UTC", "DRAW HOUSE", "PROPERTY LINE", "FENCE", "DRIVEWAY",
-                "PROPERTY DIMENSION", "FIRE SETBACKS", "RAFTERS", "MODULES", "ATTACHMENTS",
-                "USE COUNT ATTACHMENTS UTC", "EQUIPMENT ICONS", "CONDUIT", "AHJ NOTES"
-            ],
-            "PV0": ["SELECT CORRECT PROJECT DATA DROPDOWN UTC", "AHJ NOTES"],
-            "PV1": ["UPDATE SITE NOTES", "BLOWUP VIEW", "AHJ NOTES"],
-            "PV2": ["LEGEND", "ROOF CALLOUT", "AHJ NOTES"],
-            "PVA": ["ADD NO DWELLING WINDOWS AND DOORS NOTE IF NEEDED"],
-            "PV3": ["ATTACH THE CORRECT ATTACHMENT DWG", "AHJ NOTES"],
-            "PV4": ["WIRE TABLE", "GROUNDING LABEL", "AHJ NOTES"],
-            "PV5": ["LABEL 10", "LABEL 13", "AHJ NOTES"],
-            "POST CAD": ["UPDATE SHEET NAME", "AHJ NOTES", "SPEC SHEETS"]
-        }
-    </script>
+    <!-- Company Best Practices Section -->
+    <div id="CitadelCompanyBestPractices" class="hidden mb-6">
+      <h2 class="text-xl font-medium mb-3 text-left">COMPANY BEST PRACTICES:</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label>Snap N Rack UR40 Black Rail, end clamps, and mid clamps.</label></li>
+        <li><label>Please shoot for the contracted amount of MCIs, which is usually just dividing the number of mods by 2 and rounding up when needed.</label></li>
+        <li><label class="text-red-500">We do NOT install on: CALPAC/Stone Coated Steel roofs</label></li>
+        <li><label>We DO install on:</label></li>
+        <ul class="ml-6 space-y-1">
+          <li>Comp shingle – Snap N Rack L Foot and Flashing</li>
+          <li>Flat Concrete – Snap N Rack Tile Hook</li>
+          <li>Curved (S/W) Concrete Tile - Snap N Rack Adjustable Tile Hook</li>
+          <li>TPO - Snap N Rack Omnibase and Omnishield</li>
+          <li>Rolled Comp/Torchdown - Snap N Rack Omnibase and Omnishield</li>
+          <li>PVC - Snap N Rack Omnibase and Omnishield</li>
+          <li>Tar and Gravel - Snap N Rack Omnibase and Omnishield (sometimes install)</li>
+        </ul>
+        <li>Snap N Rack Tilt Kit as needed/called out. If there is an obvious interrow spacing between the PV modules (18” is typical) on a flat/low-slope roof, odds are it needs a tilt.</li>
+        <li>For vaulted ceilings, we use Snap N Rack Omnibase and Omnishield to attach to the decking, but if it is comp shingle and has a pitch, we will use Zilla plates and flashings to attach to the decking.</li>
+        <li>SnapNRack Account:</li>
+        <ul class="ml-6 space-y-1">
+          <li>USERNAME: umekahayato@gmail.com</li>
+          <li>PW: 482195skylineroad</li>
+      </ul>
+    </div>
 
-    <script>
-        // Function to load the default checklist from the embedded JSON data
-        function loadDefaultChecklist() {
-            // Read the JSON data embedded in the <script> tag
-            const data = JSON.parse(document.getElementById("default-checklist-data").textContent);
-            const checklist = document.getElementById("checklist");
-            checklist.innerHTML = ""; // Clear any existing checklist items
-            
-            // Iterate over each section in the checklist JSON
-            for (const section in data) {
-                const sectionTitle = document.createElement("h4");
-                sectionTitle.textContent = section;
-                checklist.appendChild(sectionTitle);
-                
-                // Iterate over the checklist items in each section
-                data[section].forEach(item => {
-                    const label = document.createElement("label");
-                    label.classList.add("checklist-item");
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    label.appendChild(checkbox);
-                    label.appendChild(document.createTextNode(item));
-                    checklist.appendChild(label);
-                });
-            }
-        }
+    <div id="NorthValleyCompanyBestPractices" class="hidden mb-6">
+      <h2 class="text-xl font-medium mb-3 text-left">COMPANY BEST PRACTICES:</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label>If proposed panel placement does not fit. Move the excess mods to the next best sun exposed area</label></li>
+        <li><label>60A Eaton ACD as minimum they don't use 30A</label></li>
+        <li><label>FOR NORTH VALLEY USE LUG ON THE MSP AND BREAKER ON THE GATEWAY/ADS DEVICE</label></li>
+        <li><label>NORTH VALLEY PREFERS FULL HOME BACKUPS WITH A FULL SERVICE SIZE.</label></li>
+        <li><label>Racking - Ironridge Aire A1, Tile - All Tile Hook, Comp shingle - Halo Ultragrip </label></li>
+        <li>Ironridge Account:</li>
+        <ul class="ml-6 space-y-1">
+          <li>USERNAME: umekahayato@gmail.com</li>
+          <li>PW: 482195Skylineroad</li>
+      </ul>
+    </div>
 
-        // Initial load of the default checklist when the page loads
-        window.onload = loadDefaultChecklist;
+    <div id="SameDayCompanyBestPractices" class="hidden mb-6">
+      <h2 class="text-xl font-medium mb-3 text-left">COMPANY BEST PRACTICES:</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label>Racking - IRONRIDGE XR10 </label></li>
+        <li><label>Comp Shingle, Flat Roof, Standing Seam(If the screws can be embedded in rafter)- Stronghold Butyl</label></li>
+        <li><label>BOM:</label></li>
+        <li><label>ATTACHMENT:IRONRIDGE QM-HUG-01-B1 HALO ULTRA GRIP</label></li>
+        <li><label>SCREWS:HW-RD1430-01-M1 RD STRUCTURAL SCREW 3.0L (FOR COMP SHINGLE ROOF)</label></li>
+        <li><label>MID CLAMP:UFO-CL-01-B1, Universal Module Clamp, Black</label></li>
+        <li><label>END CLAMP:UFO-END-01-B1, Universal End Clamp, Black</label></li>
+      </ul>
+    </div>
 
-        // Reset the checklist back to the default checklist
-        function resetChecklist() {
-            loadDefaultChecklist(); // Simply reload the default checklist
-        }
+    <div id="ThriveCompanyBestPractices" class="hidden mb-6">
+      <h2 class="text-xl font-medium mb-3 text-left">COMPANY BEST PRACTICES:</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label>Racking - Unirac NXT </label></li>
+        <li><label>Comp Shingle, Flat Roof, Standing Seam(If the screws can be embedded in rafter)- Stronghold Butyl</label></li>
+        <li><label>SWITCH IS THE COMPANY LOGO FOR THRIVE</label></li>
+      </ul>
+    </div>
 
-        // Update company best practices based on selection
-        function updateCompanyPractices() {
-            const company = document.getElementById("company").value;
-            fetch("companyPractices.json")
-                .then(response => response.json())
-                .then(data => {
-                    const section = document.getElementById("company-best-practices");
-                    section.innerHTML = "";
-                    if (data[company]) {
-                        data[company].forEach(item => {
-                            const label = document.createElement("label");
-                            label.classList.add("company-text", "checklist-item");
-                            const checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-                            label.appendChild(checkbox);
-                            label.appendChild(document.createTextNode(item));
-                            section.appendChild(label);
-                        });
-                    }
-                });
-        }
+    <!-- Model Space Section -->
+    <div class="mb-6">
+      <h2 class="text-xl font-medium mb-3 text-left">MODEL SPACE:</h2>
+      <ul id="checklist" class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">FILL OUT DWG PROPS UTC</label></li>
+        <li><label><input type="checkbox" class="mr-2">AZIMUTH UTC</label></li>
+        <li><label><input type="checkbox" class="mr-2">DRAW THE HOUSE AND ANY DETACHED STRUCTURES</label></li>
+         <li><label><input type="checkbox" class="mr-2">PROPERTY LINE</label></li>
+        <li><label><input type="checkbox" class="mr-2">FENCE</label></li>
+        <li><label><input type="checkbox" class="mr-2">DRIVEWAY</label></li>
+        <li><label><input type="checkbox" class="mr-2">PROPERTY DIMENSION</label></li>
+        <li><label><input type="checkbox" class="mr-2">FIRE SETBACKS/OBSTRUCTION SETBACKS(30" AC, 36" WEATHER HEAD, 18" CHIMNEY,18" SKYLIGHT) </label></li>
+        <li id="ridgeSetback" class="hidden ml-6"><label class="text-blue-500"><input type="checkbox" class="mr-2">36" RIDGE SETBACKS ARE REQUIRED</label></li>
+        <li><label><input type="checkbox" class="mr-2">RAFTERS</label></li>
+        <li><label><input type="checkbox" class="mr-2">MODULES</label></li>
+        <li><label><input type="checkbox" class="mr-2">ATTACHMENTS</label></li>
+        <li><label><input type="checkbox" class="mr-2">EQUIPMENT ICONS</label></li>
+        <li id="BACKUPSWITCH" class="hidden ml-6"><label class="text-yellow-500"><input type="checkbox" class="mr-2">SEE REQUIREMENT FOR TESLA BACKUP SWITCH<a href="https://docs.google.com/presentation/d/1YzOKmeXQs2yAeo4BGXBlwUICOcQ69rST/edit?usp=drive_link&ouid=103890528928418308367&rtpof=true&sd=true" target="_blank" class="text-blue-500 ml-2">
+            <i class="fas fa-info-circle"></i> 
+        </a></label></li>
+        <li><label><input type="checkbox" class="mr-2">CONDUIT</label></li>
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li>
+      </ul>
+      <h2 class="text-xl font-medium mb-3 text-left">PV0:</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">SELECT CORRECT PROJECT DATA DROPDOWN </label></li>
+        <li><label><input type="checkbox" class="mr-2">FOR BATTERY JOBS EDIT THE ROW BELOW THE BATTERY NAME. DON'T LEAVE BLANK<a href="https://drive.google.com/file/d/1HaXtffQeKDW8jZxg19Um8syvUHzzeKX9/view?usp=drive_link" target="_blank" class="text-blue-500 ml-2">
+            <i class="fas fa-info-circle"></i> 
+        </a></label></li>
+        <li id="EXPANSIONUNIT" class="hidden ml-6"><label class="text-yellow-500"><input type="checkbox" class="mr-2">FOR TESLA POWERWALL 3 WITH EXPANSION UNIT, MAKE SURE THE EXPANSION UNIT IS INCLUDED IN THE EQUIPMENT SUMMARY AND SYSTEM INFO.</label></li>	
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li> 
+      </ul>
+      <h2 class="text-xl font-medium mb-3 text-left">PV1:</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">UPDATE SITE NOTES</label></li> 
+        <li><label><input type="checkbox" class="mr-2">BLOWUP VIEW</label></li>
+        <li><label><input type="checkbox" class="mr-2">TURN OFF THE LAYERS THAT ARE NOT REQUIRED TO BE DISPLAYED IN THE BLOW-UP VIEW.</label></li>
+        <li><label><input type="checkbox" class="mr-2">EQUIPMENT ICON CALLOUT (ENSURE THE MODEL AND PART NUMBER ARE SHOWN)</label></li>
+        <li><label><input type="checkbox" class="mr-2">MODULE CALLOUT</label></li>
+        <li><label><input type="checkbox" class="mr-2">DRIVEWAY LABEL</label></li>
+        <li><label><input type="checkbox" class="mr-2">PROPERTY LINE LABEL</label></li>
+        <li><label><input type="checkbox" class="mr-2">STREET NAME LABEL</label></li>
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li>
+      </ul>
+      <h2 class="text-xl font-medium mb-3 text-left">PV2</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">LEGEND</label></li>
+        <li><label><input type="checkbox" class="mr-2">ROOF CALLOUT</label></li>
+        <li><label><input type="checkbox" class="mr-2">MICROINVERTER/OPTIMIZER/MCI CALLOUT</label></li>
+        <li><label><input type="checkbox" class="mr-2">FIRE ACCESS POINT CALLOUT</label></li>
+        <li><label><input type="checkbox" class="mr-2">RAILS CALLOUT</label></li>
+        <li><label><input type="checkbox" class="mr-2">ATTACHMENT CALLOUT</label></li>
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li>
+      </ul>
 
-        // Update AHJ requirements based on selection
-        function updateAHJRequirements() {
-            const ahj = document.getElementById("ahj").value;
-            fetch("ahj_requirements.json")
-                .then(response => response.json())
-                .then(data => {
-                    const checklist = document.getElementById("checklist");
-                    if (data[ahj]) {
-                        data[ahj].forEach(item => {
-                            const label = document.createElement("label");
-                            label.classList.add("ahj-text", "checklist-item");
-                            const checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-                            label.appendChild(checkbox);
-                            label.appendChild(document.createTextNode(item));
-                            checklist.appendChild(label);
-                        });
-                    }
-                });
-        }
+      <h2 class="text-xl font-medium mb-3 text-left">PV2A</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">ADD NO DWELLING WINDOWS AND DOORS NOTE IF NEEDED</label>
+          <a href="https://drive.google.com/file/d/1lFHzU82W5TK-HyH9Q5HI7y0mJ0UAIP5r/view?usp=drive_link" target="_blank" class="text-blue-500 ml-2">
+            <i class="fas fa-info-circle"></i>
+          </a>
+        </li>
+      </ul>
+      <h2 class="text-xl font-medium mb-3 text-left">PV3</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">ATTACH THE CORRECT ATTACHMENT DWG</label></li>
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li>
+      </ul>
+      <h2 class="text-xl font-medium mb-3 text-left">PV4</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">WIRE TABLE</label></li>
+        <li><label><input type="checkbox" class="mr-2">ENSURE AMBIENT TEMP IS CORRECT</label></li>
+        <li id="BREAKERWITHEXPANSIONUNIT" class="hidden ml-6"><label class="text-yellow-500"><input type="checkbox" class="mr-2">USE 80A BREAKER FOR PW3, WHEN ADDING EXPANSION UNIT.</label></li>
+        <li id="BATTERYCONFIGURATIONNOTEFOREXPANSIONUNIT" class="hidden ml-6"><label class="text-yellow-500"><input type="checkbox" class="mr-2">ADD A NOTE "NOTE: BATTERY WILL BE CONFIGURED TO OUTPUT 15.4 KW OFF GRID, REQUIRING AN 80A BREAKER IN MSP.</label></li>
+        <li><label><input type="checkbox" class="mr-2">GROUNDING LABEL</label></li>
+            <i class="fas fa-info-circle"></i> 
+          </a>
+        </li>
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li>
+      </ul>
+      <h2 class="text-xl font-medium mb-3 text-left">PV5</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">PLACARD ROTATION UTC</label></li>
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li>
+      </ul>
+        
+      <h2 class="text-xl font-medium mb-3 text-left">POST CAD</h2>
+      <ul class="space-y-2 text-left text-sm">
+        <li><label><input type="checkbox" class="mr-2">UPDATE SHEET INDEX</label></li>
+        <li><label><input type="checkbox" class="mr-2">AHJ NOTES</label></li>
+        <li><label><input type="checkbox" class="mr-2">SPEC SHEETS</label></li>
+          </a>
+      </ul>
+    </div>
 
-        // Functions for other dropdowns...
-    </script>
+    <!-- Reset Button -->
+    <button id="resetButton" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+      Reset
+    </button>
+  </div>
+
+<script>
+   // Handle Reset Button
+   document.getElementById('resetButton').addEventListener('click', () => {
+       document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+   });
+
+   // Show Ridge Setbacks when Fresno is selected
+   document.getElementById('ahjDropdown').addEventListener('change', (event) => {
+       document.getElementById('ridgeSetback').classList.toggle('hidden', event.target.value !== 'Fresno');
+    // Show ROCKLIN CHECKLIST when ROCKLIN is selected
+    document.getElementById('ROCKLINCHECKLIST').classList.toggle('hidden', event.target.value !== 'ROCKLIN');
+   });
+
+   // Show tesla backup switch when Powerwall 3 is selected
+   document.getElementById('BatteryDropdown').addEventListener('change', (event) => {
+       document.getElementById('BACKUPSWITCH').classList.toggle('hidden', event.target.value !== 'POWERWALL 3');
+       document.getElementById('EXPANSIONUNIT').classList.toggle('hidden', event.target.value !== 'POWERWALL 3');
+       document.getElementById('BREAKERWITHEXPANSIONUNIT').classList.toggle('hidden', event.target.value !== 'POWERWALL 3');
+       document.getElementById('BATTERYCONFIGURATIONNOTEFOREXPANSIONUNIT').classList.toggle('hidden', event.target.value !== 'POWERWALL 3');
+   });
+
+   // Show Company Best Practices when a company is selected
+   document.getElementById('companyDropdown').addEventListener('change', (event) => {
+       const selectedCompany = event.target.value;
+       document.getElementById('CitadelCompanyBestPractices').classList.toggle('hidden', selectedCompany !== 'CITADEL');
+       document.getElementById('NorthValleyCompanyBestPractices').classList.toggle('hidden', selectedCompany !== 'NORTH VALLEY');
+       document.getElementById('ThriveCompanyBestPractices').classList.toggle('hidden', selectedCompany !== 'THRIVE');
+       document.getElementById('SameDayCompanyBestPractices').classList.toggle('hidden', selectedCompany !== 'SAMEDAY');
+   });
+
+   // Show PG&E Requirements when PG&E is selected
+   document.getElementById('utilityDropdown').addEventListener('change', (event) => {
+       document.getElementById('PGandEnotepv4').classList.toggle('hidden', event.target.value !== 'PG&E');
+
+
+     
+   });
+</script>
+
 </body>
 </html>
