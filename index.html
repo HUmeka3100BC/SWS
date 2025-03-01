@@ -46,8 +46,33 @@
         <option value="">Select AHJ</option>
     </select>
 
-    <h3>Notes:</h3>
-    <div id="note-container" class="note-container"></div> <!-- Notes with checkboxes and help icons -->
+    <!-- Sections for Notes -->
+    <h3>PV01 - Cover Page:</h3>
+    <div id="pv01-container" class="note-container"></div>
+
+    <h3>PV02 - Site Plan:</h3>
+    <div id="pv02-container" class="note-container"></div>
+
+    <h3>PV03 - Roof Plan:</h3>
+    <div id="pv03-container" class="note-container"></div>
+
+    <h3>PV04 - Mounting Detail:</h3>
+    <div id="pv04-container" class="note-container"></div>
+
+    <h3>PV05 - Line Diagram - Mounting Detail:</h3>
+    <div id="pv05-container" class="note-container"></div>
+
+    <h3>PV06 - Electrical Calcs:</h3>
+    <div id="pv06-container" class="note-container"></div>
+
+    <h3>PV07 - Electrical Calcs:</h3>
+    <div id="pv07-container" class="note-container"></div>
+
+    <h3>PV08 - Placard:</h3>
+    <div id="pv08-container" class="note-container"></div>
+
+    <h3>PV09 - Placard:</h3>
+    <div id="pv09-container" class="note-container"></div>
 
     <script>
         const sheetUrl = "https://script.google.com/macros/s/AKfycbybzOh2zN4xH1IxnLUVW6vt_1uV7axwb2XZ-dBAr0pbhJhtV7-H2v23SEcPBYm3chjg/exec"; // Replace with your deployed script URL
@@ -88,9 +113,12 @@
 
         function displayNote() {
             const selectedAHJ = document.getElementById("ahj").value;
-            const noteContainer = document.getElementById("note-container");
-
-            noteContainer.innerHTML = ""; // Clear previous notes
+            
+            // Clear previous notes
+            for (let i = 1; i <= 9; i++) {
+                let section = document.getElementById(`pv0${i}-container`);
+                if (section) section.innerHTML = "";
+            }
 
             const foundData = allData.find(item => item.ahj === selectedAHJ);
 
@@ -99,31 +127,39 @@
 
                 notesArray.forEach(note => {
                     let trimmedNote = note.trim();
-                    let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detects URLs
+                    let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detect URLs
 
-                    let noteItem = document.createElement("div");
-                    noteItem.className = "note-item";
+                    let category = trimmedNote.match(/PV\d+/);
+                    if (category) {
+                        let sectionId = category[0].toLowerCase() + "-container";
+                        let section = document.getElementById(sectionId);
 
-                    let checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
+                        if (section) {
+                            let noteItem = document.createElement("div");
+                            noteItem.className = "note-item";
 
-                    let label = document.createElement("label");
-                    label.textContent = trimmedNote.replace(/(https?:\/\/[^\s]+)/, "").trim(); // Remove the URL from the text
+                            let checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
 
-                    noteItem.appendChild(checkbox);
-                    noteItem.appendChild(label);
+                            let label = document.createElement("label");
+                            label.textContent = trimmedNote.replace(/(PV\d+:)/, "").trim(); // Remove "PV01:", "PV02:", etc.
 
-                    // If a URL is detected, add a help icon
-                    if (urlMatch) {
-                        let helpLink = document.createElement("a");
-                        helpLink.href = urlMatch[0]; // Use the detected URL
-                        helpLink.target = "_blank";
-                        helpLink.className = "help-icon";
-                        helpLink.innerHTML = "ℹ"; // Info icon
-                        noteItem.appendChild(helpLink);
+                            noteItem.appendChild(checkbox);
+                            noteItem.appendChild(label);
+
+                            // If a URL is detected, add a help icon
+                            if (urlMatch) {
+                                let helpLink = document.createElement("a");
+                                helpLink.href = urlMatch[0]; // Use the detected URL
+                                helpLink.target = "_blank";
+                                helpLink.className = "help-icon";
+                                helpLink.innerHTML = "ℹ"; // Info icon
+                                noteItem.appendChild(helpLink);
+                            }
+
+                            section.appendChild(noteItem);
+                        }
                     }
-
-                    noteContainer.appendChild(noteItem);
                 });
             }
         }
