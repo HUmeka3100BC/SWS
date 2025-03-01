@@ -1,3 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown from Google Sheets</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        select, div { margin-top: 10px; }
+        .note-container { margin-top: 10px; }
+        .note-item { display: flex; align-items: center; margin-bottom: 5px; }
+        .note-item input { margin-right: 5px; }
+        
+        /* Help Icon Styling */
+        .help-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            background-color: blue;
+            border-radius: 50%; /* Circular Shape */
+            text-decoration: none;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .help-icon:hover {
+            background-color: darkblue;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Select a State and AHJ</h2>
+    <label for="state">State:</label>
+    <select id="state" onchange="updateAHJ()">
+        <option value="">Select State</option>
+    </select>
+
+    <label for="ahj">AHJ:</label>
+    <select id="ahj" onchange="displayNote()">
+        <option value="">Select AHJ</option>
+    </select>
+
+    <!-- Sections for Notes -->
+    <h3>PV01 - Cover Page:</h3>
+    <div id="pv01-container" class="note-container"></div>
+
+    <h3>PV02 - Site Plan:</h3>
+    <div id="pv02-container" class="note-container"></div>
+
+    <h3>PV03 - Roof Plan:</h3>
+    <div id="pv03-container" class="note-container"></div>
+
+    <h3>PV04 - Mounting Detail:</h3>
+    <div id="pv04-container" class="note-container"></div>
+
+    <h3>PV05 - Line Diagram - Mounting Detail:</h3>
+    <div id="pv05-container" class="note-container"></div>
+
+    <h3>PV06 - Electrical Calcs:</h3>
+    <div id="pv06-container" class="note-container"></div>
+
+    <h3>PV07 - Electrical Calcs:</h3>
+    <div id="pv07-container" class="note-container"></div>
+
+    <h3>PV08 - Placard:</h3>
+    <div id="pv08-container" class="note-container"></div>
+
+    <h3>PV09 - Placard:</h3>
+    <div id="pv09-container" class="note-container"></div>
+
+
 <script>
     const sheetUrl = "https://script.google.com/macros/s/AKfycbxUy0pCwOmT1X_bzXCuiBj-0c1tEhb9j0vrbBhgo-dl5hd5x1cHRIgNb3lqDLx6CK48/exec"; // Use your correct deployed script URL
 
