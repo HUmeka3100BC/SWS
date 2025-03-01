@@ -30,7 +30,7 @@
     </style>
     <script>
         async function fetchData() {
-            const sheetUrl = "YOUR_GOOGLE_SHEET_JSON_URL";
+            const sheetUrl = "https://script.google.com/macros/s/AKfycbwdzTnquV3dubjrImWYRte6b2kmRhS7umC3-jxJ698j3mR2w-GrDn1YgfFsG7m-hsV5/exec";
             const response = await fetch(sheetUrl);
             const data = await response.json();
             return data.feed.entry.map(entry => ({
