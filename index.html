@@ -3,114 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHJ Lookup</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        select, button {
-            margin: 10px;
-            padding: 10px;
-            background: #333;
-            color: white;
-            border: 1px solid #555;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        .checkbox-container {
-            margin-top: 20px;
-        }
-    </style>
-    <script>
-        async function fetchData() {
-            const url = "https://script.google.com/macros/s/AKfycbz8rDcV9oEAX5sv8vU0QG9r4qkXXlAVKN5_IC-6Lzc/dev"; // Replace with your new URL
-
-            try {
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log("Fetched Data:", data); // Debugging: See the fetched data
-                return data.map(item => ({
-                    state: item.state,
-                    ahj: item.ahj,
-                    note: item.ahjnote
-                }));
-            } catch (error) {
-                console.error("Error fetching data:", error);
-                alert("Failed to fetch data. Please check your Google Sheets API.");
-                return [];
-            }
-        }
-
-        async function init() {
-            const data = await fetchData();
-            if (data.length === 0) return; // Stop if there's no data
-
-            const stateDropdown = document.getElementById("state");
-            const ahjDropdown = document.getElementById("ahj");
-            const noteDisplay = document.getElementById("note");
-
-            // Populate state dropdown
-            const states = [...new Set(data.map(item => item.state))];
-            states.forEach(state => {
-                let option = new Option(state, state);
-                stateDropdown.appendChild(option);
-            });
-
-            // When state is selected, update AHJ dropdown
-            stateDropdown.addEventListener("change", function() {
-                ahjDropdown.innerHTML = "<option>Select AHJ</option>";
-                const filteredAHJs = data.filter(item => item.state === stateDropdown.value);
-                filteredAHJs.forEach(item => {
-                    let option = new Option(item.ahj, item.ahj);
-                    ahjDropdown.appendChild(option);
-                });
-            });
-
-            // When AHJ is selected, show AHJ Note
-            ahjDropdown.addEventListener("change", function() {
-                const selected = data.find(item => item.ahj === ahjDropdown.value && item.state === stateDropdown.value);
-                noteDisplay.innerHTML = selected ? `<input type='checkbox'> ${selected.note}` : "";
-            });
-
-            // Reset button clears selections
-            document.getElementById("reset").addEventListener("click", function() {
-                stateDropdown.selectedIndex = 0;
-                ahjDropdown.innerHTML = "<option>Select AHJ</option>";
-                noteDisplay.innerHTML = "";
-            });
-        }
-
-        window.onload = init;
-    </script>
+    <title>Dropdown with Google Sheets</title>
 </head>
 <body>
-    <h1>AHJ Lookup</h1>
-    <div class="container">
-        <select id="state">
-            <option>Select State</option>
-        </select>
-        <select id="ahj">
-            <option>Select AHJ</option>
-        </select>
-    </div>
-    <div class="checkbox-container" id="note"></div>
-    <button id="reset">Reset</button>
+    <label for="state">State:</label>
+    <select id="state">
+        <option value="">Select State</option>
+    </select>
+
+    <label for="ahj">AHJ:</label>
+    <select id="ahj">
+        <option value="">Select AHJ</option>
+    </select>
+
+    <p id="note"></p>
+
+    <script src="script.js"></script>
 </body>
 </html>
