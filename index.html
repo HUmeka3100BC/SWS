@@ -1,175 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown from Google Sheets</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        select, div { margin-top: 10px; }
-        .note-container { margin-top: 10px; }
-        .note-item { display: flex; align-items: center; margin-bottom: 5px; }
-        .note-item input { margin-right: 5px; }
+<script>
+    const sheetUrl = "https://script.google.com/macros/s/AKfycbxUy0pCwOmT1X_bzXCuiBj-0c1tEhb9j0vrbBhgo-dl5hd5x1cHRIgNb3lqDLx6CK48/exec"; // Use your correct deployed script URL
+
+    let allData = [];
+
+    async function fetchData() {
+        const response = await fetch(sheetUrl);
+        const data = await response.json();
+        allData = data;
+
+        const states = [...new Set(data.map(item => item.state))];
+        const stateDropdown = document.getElementById("state");
+
+        states.forEach(state => {
+            let option = document.createElement("option");
+            option.value = state;
+            option.textContent = state;
+            stateDropdown.appendChild(option);
+        });
+    }
+
+    function updateAHJ() {
+        const selectedState = document.getElementById("state").value;
+        const ahjDropdown = document.getElementById("ahj");
+
+        ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
+
+        const filteredAHJs = allData.filter(item => item.state === selectedState);
+
+        filteredAHJs.forEach(item => {
+            let option = document.createElement("option");
+            option.value = item.ahj;
+            option.textContent = item.ahj;
+            ahjDropdown.appendChild(option);
+        });
+    }
+
+    function displayNote() {
+        const selectedAHJ = document.getElementById("ahj").value;
         
-        /* Help Icon Styling */
-        .help-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 20px;
-            height: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            color: white;
-            background-color: blue;
-            border-radius: 50%; /* Circular Shape */
-            text-decoration: none;
-            margin-left: 8px;
-            cursor: pointer;
+        // Clear previous notes
+        for (let i = 1; i <= 9; i++) {
+            let section = document.getElementById(`pv0${i}-container`);
+            if (section) section.innerHTML = "";
         }
 
-        .help-icon:hover {
-            background-color: darkblue;
-        }
-    </style>
-</head>
-<body>
+        const foundData = allData.find(item => item.ahj === selectedAHJ);
 
-    <h2>Select a State and AHJ</h2>
-    <label for="state">State:</label>
-    <select id="state" onchange="updateAHJ()">
-        <option value="">Select State</option>
-    </select>
+        if (foundData && foundData.note) {
+            let notesArray = foundData.note.split("&");
 
-    <label for="ahj">AHJ:</label>
-    <select id="ahj" onchange="displayNote()">
-        <option value="">Select AHJ</option>
-    </select>
+            notesArray.forEach(note => {
+                let trimmedNote = note.trim();
+                let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detect URLs
+                let category = trimmedNote.match(/PV\d+/);
+                let textColor = foundData.color || "#000000"; // Default to black if no color
 
-    <!-- Sections for Notes -->
-    <h3>PV01 - Cover Page:</h3>
-    <div id="pv01-container" class="note-container"></div>
+                if (category) {
+                    let sectionId = category[0].toLowerCase() + "-container";
+                    let section = document.getElementById(sectionId);
 
-    <h3>PV02 - Site Plan:</h3>
-    <div id="pv02-container" class="note-container"></div>
+                    if (section) {
+                        let noteItem = document.createElement("div");
+                        noteItem.className = "note-item";
 
-    <h3>PV03 - Roof Plan:</h3>
-    <div id="pv03-container" class="note-container"></div>
+                        let checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
 
-    <h3>PV04 - Mounting Detail:</h3>
-    <div id="pv04-container" class="note-container"></div>
+                        // Remove PVXX: and URLs from the note
+                        let labelText = trimmedNote.replace(/PV\d+:/, "").trim();
+                        labelText = labelText.replace(/(https?:\/\/[^\s]+)/, "").trim();
 
-    <h3>PV05 - Line Diagram - Mounting Detail:</h3>
-    <div id="pv05-container" class="note-container"></div>
+                        let label = document.createElement("label");
+                        label.textContent = labelText;
+                        label.style.color = textColor; // Apply Google Sheets text color
 
-    <h3>PV06 - Electrical Calcs:</h3>
-    <div id="pv06-container" class="note-container"></div>
+                        noteItem.appendChild(checkbox);
+                        noteItem.appendChild(label);
 
-    <h3>PV07 - Electrical Calcs:</h3>
-    <div id="pv07-container" class="note-container"></div>
-
-    <h3>PV08 - Placard:</h3>
-    <div id="pv08-container" class="note-container"></div>
-
-    <h3>PV09 - Placard:</h3>
-    <div id="pv09-container" class="note-container"></div>
-
-    <script>
-        const sheetUrl = "https://script.google.com/macros/s/AKfycbybzOh2zN4xH1IxnLUVW6vt_1uV7axwb2XZ-dBAr0pbhJhtV7-H2v23SEcPBYm3chjg/exec"; // Replace with your deployed script URL
-
-        let allData = [];
-
-        async function fetchData() {
-            const response = await fetch(sheetUrl);
-            const data = await response.json();
-            allData = data;
-
-            const states = [...new Set(data.map(item => item.state))];
-            const stateDropdown = document.getElementById("state");
-
-            states.forEach(state => {
-                let option = document.createElement("option");
-                option.value = state;
-                option.textContent = state;
-                stateDropdown.appendChild(option);
-            });
-        }
-
-        function updateAHJ() {
-            const selectedState = document.getElementById("state").value;
-            const ahjDropdown = document.getElementById("ahj");
-
-            ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
-
-            const filteredAHJs = allData.filter(item => item.state === selectedState);
-
-            filteredAHJs.forEach(item => {
-                let option = document.createElement("option");
-                option.value = item.ahj;
-                option.textContent = item.ahj;
-                ahjDropdown.appendChild(option);
-            });
-        }
-
-        function displayNote() {
-            const selectedAHJ = document.getElementById("ahj").value;
-            
-            // Clear previous notes
-            for (let i = 1; i <= 9; i++) {
-                let section = document.getElementById(`pv0${i}-container`);
-                if (section) section.innerHTML = "";
-            }
-
-            const foundData = allData.find(item => item.ahj === selectedAHJ);
-
-            if (foundData && foundData.note) {
-                let notesArray = foundData.note.split("&");
-
-                notesArray.forEach(note => {
-                    let trimmedNote = note.trim();
-                    let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detect URLs
-                    let category = trimmedNote.match(/PV\d+/);
-
-                    if (category) {
-                        let sectionId = category[0].toLowerCase() + "-container";
-                        let section = document.getElementById(sectionId);
-
-                        if (section) {
-                            let noteItem = document.createElement("div");
-                            noteItem.className = "note-item";
-
-                            let checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-
-                            // Remove PVXX: and URLs from the note
-                            let labelText = trimmedNote.replace(/PV\d+:/, "").trim();
-                            labelText = labelText.replace(/(https?:\/\/[^\s]+)/, "").trim();
-
-                            let label = document.createElement("label");
-                            label.textContent = labelText;
-
-                            noteItem.appendChild(checkbox);
-                            noteItem.appendChild(label);
-
-                            // If a URL is detected, add a help icon (without showing the URL)
-                            if (urlMatch) {
-                                let helpLink = document.createElement("a");
-                                helpLink.href = urlMatch[0]; // Use the detected URL
-                                helpLink.target = "_blank";
-                                helpLink.className = "help-icon";
-                                helpLink.innerHTML = "ℹ"; // Info icon
-                                noteItem.appendChild(helpLink);
-                            }
-
-                            section.appendChild(noteItem);
+                        // If a URL is detected, add a help icon (without showing the URL)
+                        if (urlMatch) {
+                            let helpLink = document.createElement("a");
+                            helpLink.href = urlMatch[0]; // Use the detected URL
+                            helpLink.target = "_blank";
+                            helpLink.className = "help-icon";
+                            helpLink.innerHTML = "ℹ"; // Info icon
+                            noteItem.appendChild(helpLink);
                         }
+
+                        section.appendChild(noteItem);
                     }
-                });
-            }
+                }
+            });
         }
+    }
 
-        fetchData();
-    </script>
-
-</body>
-</html>
+    fetchData();
+</script>
