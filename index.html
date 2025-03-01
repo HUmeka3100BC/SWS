@@ -6,7 +6,10 @@
     <title>Dropdown from Google Sheets</title>
     <style>
         body { font-family: Arial, sans-serif; }
-        select, p { margin-top: 10px; }
+        select, div { margin-top: 10px; }
+        .note-container { margin-top: 10px; }
+        .note-item { display: flex; align-items: center; margin-bottom: 5px; }
+        .note-item input { margin-right: 5px; }
     </style>
 </head>
 <body>
@@ -22,7 +25,8 @@
         <option value="">Select AHJ</option>
     </select>
 
-    <p id="note"></p>
+    <h3>Notes:</h3>
+    <div id="note-container" class="note-container"></div> <!-- Notes with checkboxes will appear here -->
 
     <script>
         const sheetUrl = "https://script.google.com/macros/s/AKfycbybzOh2zN4xH1IxnLUVW6vt_1uV7axwb2XZ-dBAr0pbhJhtV7-H2v23SEcPBYm3chjg/exec"; // Replace with your deployed script URL
@@ -61,20 +65,35 @@
             });
         }
 
-function displayNote() {
-    const selectedAHJ = document.getElementById("ahj").value;
-    const noteParagraph = document.getElementById("note");
+        function displayNote() {
+            const selectedAHJ = document.getElementById("ahj").value;
+            const noteContainer = document.getElementById("note-container");
 
-    const foundData = allData.find(item => item.ahj === selectedAHJ);
+            noteContainer.innerHTML = ""; // Clear previous notes
 
-    if (foundData && foundData.note) {
-        // Replace "&" with actual line breaks using <br>
-        let formattedNote = foundData.note.replace(/&/g, "<br>");
-        noteParagraph.innerHTML = formattedNote;
-    } else {
-        noteParagraph.innerHTML = "";
-    }
-}
+            const foundData = allData.find(item => item.ahj === selectedAHJ);
+
+            if (foundData && foundData.note) {
+                // Split notes based on "&" and create checkboxes
+                let notesArray = foundData.note.split("&");
+
+                notesArray.forEach(note => {
+                    let noteItem = document.createElement("div");
+                    noteItem.className = "note-item";
+
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+
+                    let label = document.createElement("label");
+                    label.textContent = note.trim();
+
+                    noteItem.appendChild(checkbox);
+                    noteItem.appendChild(label);
+
+                    noteContainer.appendChild(noteItem);
+                });
+            }
+        }
 
         fetchData();
     </script>
