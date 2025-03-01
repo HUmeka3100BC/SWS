@@ -29,16 +29,16 @@
         }
     </style>
     <script>
-        async function fetchData() {
-            const sheetUrl = "https://script.google.com/macros/s/AKfycbwofiDnNbDiCOm2awzU-bw5EhCEWZBXdqSF57wfVKH-AwW73o9VZnwHhLR3igk1Bl2D/exec";
-            const response = await fetch(sheetUrl);
-            const data = await response.json();
-            return data.feed.entry.map(entry => ({
-                state: entry["gsx$state"].$t,
-                ahj: entry["gsx$ahj"].$t,
-                note: entry["gsx$ahjnote"].$t
-            }));
-        }
+async function fetchData() {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbz8rDcV9oEAX5sv8vU0QG9r4qkXXlAVKN5_IC-6Lzc/dev"); // Replace with your new URL
+    const data = await response.json();
+    return data.map(item => ({
+        state: item.state,
+        ahj: item.ahj,
+        note: item.ahjnote
+    }));
+}
+
 
         async function init() {
             const data = await fetchData();
