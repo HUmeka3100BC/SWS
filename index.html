@@ -68,11 +68,11 @@ function displayNote() {
     const foundData = allData.find(item => item.ahj === selectedAHJ);
 
     if (foundData && foundData.note) {
-        // Replace "&" with actual line breaks
-        let formattedNote = foundData.note.replace(/&/g, "\n");
-        noteParagraph.textContent = formattedNote;
+        // Replace "&" with actual line breaks using <br>
+        let formattedNote = foundData.note.replace(/&/g, "<br>");
+        noteParagraph.innerHTML = formattedNote;
     } else {
-        noteParagraph.textContent = "";
+        noteParagraph.innerHTML = "";
     }
 }
 
