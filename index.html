@@ -61,14 +61,20 @@
             });
         }
 
-        function displayNote() {
-            const selectedAHJ = document.getElementById("ahj").value;
-            const noteParagraph = document.getElementById("note");
+function displayNote() {
+    const selectedAHJ = document.getElementById("ahj").value;
+    const noteParagraph = document.getElementById("note");
 
-            const foundData = allData.find(item => item.ahj === selectedAHJ);
-            noteParagraph.textContent = foundData ? foundData.note : "";
-        }
+    const foundData = allData.find(item => item.ahj === selectedAHJ);
 
+    if (foundData && foundData.note) {
+        // Split notes using "&" and format as a bullet list
+        let formattedNote = foundData.note.split("&").map(item => `• ${item.trim()}`).join("\n");
+        noteParagraph.textContent = formattedNote;
+    } else {
+        noteParagraph.textContent = "";
+    }
+}
         fetchData();
     </script>
 
