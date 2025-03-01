@@ -128,8 +128,8 @@
                 notesArray.forEach(note => {
                     let trimmedNote = note.trim();
                     let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detect URLs
-
                     let category = trimmedNote.match(/PV\d+/);
+
                     if (category) {
                         let sectionId = category[0].toLowerCase() + "-container";
                         let section = document.getElementById(sectionId);
@@ -141,13 +141,17 @@
                             let checkbox = document.createElement("input");
                             checkbox.type = "checkbox";
 
+                            // Remove PVXX: and URLs from the note
+                            let labelText = trimmedNote.replace(/PV\d+:/, "").trim();
+                            labelText = labelText.replace(/(https?:\/\/[^\s]+)/, "").trim();
+
                             let label = document.createElement("label");
-                            label.textContent = trimmedNote.replace(/(PV\d+:)/, "").trim(); // Remove "PV01:", "PV02:", etc.
+                            label.textContent = labelText;
 
                             noteItem.appendChild(checkbox);
                             noteItem.appendChild(label);
 
-                            // If a URL is detected, add a help icon
+                            // If a URL is detected, add a help icon (without showing the URL)
                             if (urlMatch) {
                                 let helpLink = document.createElement("a");
                                 helpLink.href = urlMatch[0]; // Use the detected URL
