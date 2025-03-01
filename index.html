@@ -81,33 +81,35 @@
             const foundData = allData.find(item => item.ahj === selectedAHJ);
 
             if (foundData && foundData.note) {
-                // Split notes based on "&" and create checkboxes
                 let notesArray = foundData.note.split("&");
 
                 notesArray.forEach(note => {
-                    let noteItem = document.createElement("div");
-                    noteItem.className = "note-item";
+                    let trimmedNote = note.trim();
 
-                    let checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-
-                    let label = document.createElement("label");
-                    label.textContent = note.trim();
-
-                    noteItem.appendChild(checkbox);
-                    noteItem.appendChild(label);
-
-                    // If the note contains a help URL (detected with "http"), add a help icon
-                    if (note.includes("http")) {
+                    if (trimmedNote.toLowerCase().includes("for more details")) {
+                        // Only show help icon, do not include this text in the checklist
                         let helpLink = document.createElement("a");
-                        helpLink.href = note.match(/(https?:\/\/[^\s]+)/)[0]; // Extracts the URL
+                        helpLink.href = "https://your-help-page.com"; // Replace with actual help page URL
                         helpLink.target = "_blank";
                         helpLink.className = "help-icon";
                         helpLink.innerHTML = " ℹ️"; // Info icon
-                        noteItem.appendChild(helpLink);
-                    }
+                        noteContainer.appendChild(helpLink);
+                    } else {
+                        // Create normal checklist item
+                        let noteItem = document.createElement("div");
+                        noteItem.className = "note-item";
 
-                    noteContainer.appendChild(noteItem);
+                        let checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
+
+                        let label = document.createElement("label");
+                        label.textContent = trimmedNote;
+
+                        noteItem.appendChild(checkbox);
+                        noteItem.appendChild(label);
+
+                        noteContainer.appendChild(noteItem);
+                    }
                 });
             }
         }
