@@ -1,6 +1,6 @@
 const sheetURL = "https://script.google.com/macros/s/AKfycbz8rDcV9oEAX5sv8vU0QG9r4qkXXlAVKN5_IC-6Lzc/dev"; // Replace with your Sheet URL
 
-fetch(sheetURL)
+fetch(https://script.google.com/macros/s/AKfycbz8rDcV9oEAX5sv8vU0QG9r4qkXXlAVKN5_IC-6Lzc/dev)
     .then(response => response.json())
     .then(data => {
         const entries = data.feed.entry;
