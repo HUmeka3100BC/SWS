@@ -80,37 +80,59 @@
 
     let allData = [];
 
-    async function fetchData() {
-        const response = await fetch(sheetUrl);
-        const data = await response.json();
-        allData = data;
+async function fetchData() {
+    const response = await fetch(sheetUrl);
+    const data = await response.json();
+    console.log("Fetched data:", data); // Debugging log
+    allData = data;
 
-        const states = [...new Set(data.map(item => item.state))];
-        const stateDropdown = document.getElementById("state");
-
-        states.forEach(state => {
-            let option = document.createElement("option");
-            option.value = state;
-            option.textContent = state;
-            stateDropdown.appendChild(option);
-        });
+    if (!Array.isArray(allData) || allData.length === 0) {
+        console.error("No data received or data is not in correct format.");
+        return;
     }
 
-    function updateAHJ() {
-        const selectedState = document.getElementById("state").value;
-        const ahjDropdown = document.getElementById("ahj");
+    const states = [...new Set(data.map(item => item.state).filter(Boolean))]; // Ensure no empty states
+    const stateDropdown = document.getElementById("state");
 
-        ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
-
-        const filteredAHJs = allData.filter(item => item.state === selectedState);
-
-        filteredAHJs.forEach(item => {
-            let option = document.createElement("option");
-            option.value = item.ahj;
-            option.textContent = item.ahj;
-            ahjDropdown.appendChild(option);
-        });
+    if (states.length === 0) {
+        console.error("No states found in data.");
+        return;
     }
+
+    states.forEach(state => {
+        let option = document.createElement("option");
+        option.value = state;
+        option.textContent = state;
+        stateDropdown.appendChild(option);
+    });
+
+    console.log("States added:", states); // Debugging log
+}
+
+
+function updateAHJ() {
+    const selectedState = document.getElementById("state").value;
+    const ahjDropdown = document.getElementById("ahj");
+    ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
+
+    const filteredAHJs = allData.filter(item => item.state === selectedState);
+    console.log("Filtered AHJs for state:", selectedState, filteredAHJs); // Debugging log
+
+    if (filteredAHJs.length === 0) {
+        console.error("No AHJs found for selected state.");
+        return;
+    }
+
+    filteredAHJs.forEach(item => {
+        let option = document.createElement("option");
+        option.value = item.ahj;
+        option.textContent = item.ahj;
+        ahjDropdown.appendChild(option);
+    });
+
+    console.log("AHJs added:", filteredAHJs.map(item => item.ahj)); // Debugging log
+}
+
 
     function displayNote() {
         const selectedAHJ = document.getElementById("ahj").value;
