@@ -1,4 +1,4 @@
-const sheetURL = "YOUR_GOOGLE_SHEET_JSON_URL"; // Replace with your Sheet URL
+const sheetURL = "https://script.google.com/macros/s/AKfycbz8rDcV9oEAX5sv8vU0QG9r4qkXXlAVKN5_IC-6Lzc/dev"; // Replace with your Sheet URL
 
 fetch(sheetURL)
     .then(response => response.json())
