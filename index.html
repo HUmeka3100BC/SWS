@@ -68,13 +68,14 @@ function displayNote() {
     const foundData = allData.find(item => item.ahj === selectedAHJ);
 
     if (foundData && foundData.note) {
-        // Split notes using "&" and format as a bullet list
-        let formattedNote = foundData.note.split("&").map(item => `• ${item.trim()}`).join("\n");
+        // Replace "&" with actual line breaks
+        let formattedNote = foundData.note.replace(/&/g, "\n");
         noteParagraph.textContent = formattedNote;
     } else {
         noteParagraph.textContent = "";
     }
 }
+
         fetchData();
     </script>
 
