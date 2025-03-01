@@ -85,31 +85,31 @@
 
                 notesArray.forEach(note => {
                     let trimmedNote = note.trim();
+                    let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detects URLs
 
-                    if (trimmedNote.toLowerCase().includes("for more details")) {
-                        // Only show help icon, do not include this text in the checklist
+                    let noteItem = document.createElement("div");
+                    noteItem.className = "note-item";
+
+                    let checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+
+                    let label = document.createElement("label");
+                    label.textContent = trimmedNote.replace(/(https?:\/\/[^\s]+)/, "").trim(); // Remove the URL from the text
+
+                    noteItem.appendChild(checkbox);
+                    noteItem.appendChild(label);
+
+                    // If a URL is detected, add a help icon
+                    if (urlMatch) {
                         let helpLink = document.createElement("a");
-                        helpLink.href = "https://your-help-page.com"; // Replace with actual help page URL
+                        helpLink.href = urlMatch[0]; // Use the detected URL
                         helpLink.target = "_blank";
                         helpLink.className = "help-icon";
                         helpLink.innerHTML = " ℹ️"; // Info icon
-                        noteContainer.appendChild(helpLink);
-                    } else {
-                        // Create normal checklist item
-                        let noteItem = document.createElement("div");
-                        noteItem.className = "note-item";
-
-                        let checkbox = document.createElement("input");
-                        checkbox.type = "checkbox";
-
-                        let label = document.createElement("label");
-                        label.textContent = trimmedNote;
-
-                        noteItem.appendChild(checkbox);
-                        noteItem.appendChild(label);
-
-                        noteContainer.appendChild(noteItem);
+                        noteItem.appendChild(helpLink);
                     }
+
+                    noteContainer.appendChild(noteItem);
                 });
             }
         }
