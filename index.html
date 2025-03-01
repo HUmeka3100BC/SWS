@@ -48,7 +48,7 @@
     
     <script>
         async function fetchData() {
-            const sheetUrl = 'YOUR_GOOGLE_SHEETS_API_URL'; // Replace with actual API
+            const sheetUrl = 'https://script.google.com/macros/s/AKfycbxOhsgK0WVMcCyePDw4Ex30NwrdyaZYyIGSz1EVIoUkQDitcI2gogGDgF3NDIl-nYbR/exec'; // Replace with actual API
             const response = await fetch(sheetUrl);
             const data = await response.json();
             processDropdownData(data);
