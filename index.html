@@ -10,6 +10,13 @@
         .note-container { margin-top: 10px; }
         .note-item { display: flex; align-items: center; margin-bottom: 5px; }
         .note-item input { margin-right: 5px; }
+        .help-icon {
+            font-size: 16px;
+            color: blue;
+            cursor: pointer;
+            margin-left: 8px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -26,7 +33,7 @@
     </select>
 
     <h3>Notes:</h3>
-    <div id="note-container" class="note-container"></div> <!-- Notes with checkboxes will appear here -->
+    <div id="note-container" class="note-container"></div> <!-- Notes with checkboxes and help icons -->
 
     <script>
         const sheetUrl = "https://script.google.com/macros/s/AKfycbybzOh2zN4xH1IxnLUVW6vt_1uV7axwb2XZ-dBAr0pbhJhtV7-H2v23SEcPBYm3chjg/exec"; // Replace with your deployed script URL
@@ -89,6 +96,16 @@
 
                     noteItem.appendChild(checkbox);
                     noteItem.appendChild(label);
+
+                    // If the note contains a help URL (detected with "http"), add a help icon
+                    if (note.includes("http")) {
+                        let helpLink = document.createElement("a");
+                        helpLink.href = note.match(/(https?:\/\/[^\s]+)/)[0]; // Extracts the URL
+                        helpLink.target = "_blank";
+                        helpLink.className = "help-icon";
+                        helpLink.innerHTML = " ℹ️"; // Info icon
+                        noteItem.appendChild(helpLink);
+                    }
 
                     noteContainer.appendChild(noteItem);
                 });
