@@ -3,89 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Data Viewer</title>
+    <title>AHJ Dropdowns</title>
     <style>
-        body {
-            background-color: #121212;
-            color: white;
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .container {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        select, button {
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-        }
-        .data-container {
-            margin-top: 20px;
-        }
+        body { background-color: #121212; color: white; font-family: Arial, sans-serif; text-align: center; }
+        .container { display: flex; justify-content: center; gap: 10px; padding: 20px; }
+        select, button { padding: 10px; background: #333; color: white; border: none; cursor: pointer; }
+        .data-box { margin-top: 20px; padding: 10px; background: #222; display: inline-block; }
+        label { display: block; }
     </style>
 </head>
 <body>
-    <h2>Dynamic Dropdowns with Google Sheets Data</h2>
+    <h1>AHJ Selection</h1>
     <div class="container">
-        <select id="stateDropdown" onchange="updateAHJs()">
+        <select id="stateDropdown" onchange="updateAHJ()">
             <option value="">Select State</option>
         </select>
-        <select id="ahjDropdown">
+        <select id="ahjDropdown" onchange="showData()">
             <option value="">Select AHJ</option>
         </select>
-        <select id="utilityDropdown">
-            <option value="">Select Utility</option>
-        </select>
-        <select id="batteryDropdown">
-            <option value="">Select Battery</option>
-        </select>
-        <button onclick="resetSelections()">Reset</button>
     </div>
-    <div class="data-container" id="dataDisplay"></div>
-    
-    <script>
-        async function fetchData() {
-            const sheetUrl = 'https://script.google.com/macros/s/AKfycbw3eH_sgCMeZu8DTTV6QevdE41ZY84hdCv_R2eTB3gCOHmYlS6KHzU3invCkV2RGY2i/exec'; // Replace with actual API
-            const response = await fetch(sheetUrl);
-            const data = await response.json();
-            processDropdownData(data);
-        }
-        
-        function processDropdownData(data) {
-            let states = new Set();
-            data.forEach(row => states.add(row.STATE));
-            
-            const stateDropdown = document.getElementById('stateDropdown');
-            states.forEach(state => {
-                let option = document.createElement('option');
-                option.value = state;
-                option.textContent = state;
-                stateDropdown.appendChild(option);
-            });
-        }
+    <div>
+        <label><input type="checkbox" id="confirmCheckbox"> Confirm Selection</label>
+    </div>
+    <button onclick="resetForm()">Reset</button>
+    <div class="data-box" id="dataBox">AHJ Note will appear here</div>
 
-        function updateAHJs() {
-            const selectedState = document.getElementById('stateDropdown').value;
-            const ahjDropdown = document.getElementById('ahjDropdown');
-            ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
-            
-            // Filter and update AHJ dropdown based on state (mock example)
-            if (selectedState) {
-                // Fetch data again or use cached data
+    <script>
+        const sheetURL = "https://script.google.com/macros/s/AKfycbwyCHVQXks79cEjbfnyIqP2GkYLA0Ntjrx_XIliPsxiEjaZ56bEJgpX9qE1kMA14FsD/exec"; // Replace with your Sheet JSON link
+        let data = [];
+        
+        async function fetchData() {
+            try {
+                let response = await fetch(sheetURL);
+                let json = await response.json();
+                data = json.feed.entry.map(row => ({
+                    state: row.gsx$state.$t,
+                    ahj: row.gsx$ahj.$t,
+                    note: row.gsx$ahjnote.$t
+                }));
+                populateStates();
+            } catch (error) {
+                console.error("Error fetching data:", error);
             }
         }
-
-        function resetSelections() {
-            document.getElementById('stateDropdown').value = '';
-            document.getElementById('ahjDropdown').innerHTML = '<option value="">Select AHJ</option>';
-            document.getElementById('utilityDropdown').innerHTML = '<option value="">Select Utility</option>';
-            document.getElementById('batteryDropdown').innerHTML = '<option value="">Select Battery</option>';
-            document.getElementById('dataDisplay').innerHTML = '';
+        
+        function populateStates() {
+            let states = [...new Set(data.map(item => item.state))];
+            let stateDropdown = document.getElementById("stateDropdown");
+            states.forEach(state => {
+                let option = new Option(state, state);
+                stateDropdown.add(option);
+            });
         }
         
+        function updateAHJ() {
+            let selectedState = document.getElementById("stateDropdown").value;
+            let ahjDropdown = document.getElementById("ahjDropdown");
+            ahjDropdown.innerHTML = "<option value=''>Select AHJ</option>";
+            let filtered = data.filter(item => item.state === selectedState);
+            filtered.forEach(item => {
+                let option = new Option(item.ahj, item.ahj);
+                ahjDropdown.add(option);
+            });
+        }
+        
+        function showData() {
+            let selectedState = document.getElementById("stateDropdown").value;
+            let selectedAHJ = document.getElementById("ahjDropdown").value;
+            let result = data.find(item => item.state === selectedState && item.ahj === selectedAHJ);
+            document.getElementById("dataBox").textContent = result ? result.note : "No data available";
+        }
+        
+        function resetForm() {
+            document.getElementById("stateDropdown").value = "";
+            document.getElementById("ahjDropdown").innerHTML = "<option value=''>Select AHJ</option>";
+            document.getElementById("dataBox").textContent = "AHJ Note will appear here";
+            document.getElementById("confirmCheckbox").checked = false;
+        }
+
         fetchData();
     </script>
 </body>
