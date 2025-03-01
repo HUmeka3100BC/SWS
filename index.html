@@ -3,39 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>State & AHJ Selector</title>
+    <title>Dropdown from Google Sheets</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-        select, #note { margin-top: 10px; padding: 8px; width: 200px; }
+        body { font-family: Arial, sans-serif; }
+        select, p { margin-top: 10px; }
     </style>
 </head>
 <body>
-    <h2>Dropdown Filter</h2>
-    <label for="state">Select State:</label>
-    <select id="state">
-        <option value="">-- Choose State --</option>
+
+    <h2>Select a State and AHJ</h2>
+    <label for="state">State:</label>
+    <select id="state" onchange="updateAHJ()">
+        <option value="">Select State</option>
     </select>
 
-    <label for="ahj">Select AHJ:</label>
-    <select id="ahj">
-        <option value="">-- Choose AHJ --</option>
+    <label for="ahj">AHJ:</label>
+    <select id="ahj" onchange="displayNote()">
+        <option value="">Select AHJ</option>
     </select>
 
     <p id="note"></p>
 
     <script>
-        const sheetURL = "https://script.google.com/macros/s/AKfycbxrDfL1-EZ1g72VBxJK6SOgsJH4-ItXQ9PJwmV2rJLkAigAJ_XziAXuZNIKOZQTsTuD/exec"; 
+        const sheetUrl = "https://script.google.com/macros/s/AKfycbybzOh2zN4xH1IxnLUVW6vt_1uV7axwb2XZ-dBAr0pbhJhtV7-H2v23SEcPBYm3chjg/exec"; // Replace with your deployed script URL
 
-        let stateDropdown = document.getElementById("state");
-        let ahjDropdown = document.getElementById("ahj");
-        let noteDisplay = document.getElementById("note");
-        let data = [];
+        let allData = [];
 
         async function fetchData() {
-            const response = await fetch(sheetURL);
-            data = await response.json();
+            const response = await fetch(sheetUrl);
+            const data = await response.json();
+            allData = data;
 
-            let states = [...new Set(data.map(row => row[0]))]; 
+            const states = [...new Set(data.map(item => item.state))];
+            const stateDropdown = document.getElementById("state");
+
             states.forEach(state => {
                 let option = document.createElement("option");
                 option.value = state;
@@ -44,27 +45,32 @@
             });
         }
 
-        stateDropdown.addEventListener("change", () => {
-            let selectedState = stateDropdown.value;
-            ahjDropdown.innerHTML = '<option value="">-- Choose AHJ --</option>';
-            noteDisplay.textContent = ""; 
+        function updateAHJ() {
+            const selectedState = document.getElementById("state").value;
+            const ahjDropdown = document.getElementById("ahj");
 
-            let filteredAHJs = data.filter(row => row[0] === selectedState).map(row => row[1]);
-            filteredAHJs.forEach(ahj => {
+            ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
+
+            const filteredAHJs = allData.filter(item => item.state === selectedState);
+
+            filteredAHJs.forEach(item => {
                 let option = document.createElement("option");
-                option.value = ahj;
-                option.textContent = ahj;
+                option.value = item.ahj;
+                option.textContent = item.ahj;
                 ahjDropdown.appendChild(option);
             });
-        });
+        }
 
-        ahjDropdown.addEventListener("change", () => {
-            let selectedAHJ = ahjDropdown.value;
-            let note = data.find(row => row[1] === selectedAHJ)?.[2] || "No note available";
-            noteDisplay.textContent = `Note: ${note}`;
-        });
+        function displayNote() {
+            const selectedAHJ = document.getElementById("ahj").value;
+            const noteParagraph = document.getElementById("note");
+
+            const foundData = allData.find(item => item.ahj === selectedAHJ);
+            noteParagraph.textContent = foundData ? foundData.note : "";
+        }
 
         fetchData();
     </script>
+
 </body>
 </html>
