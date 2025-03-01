@@ -48,7 +48,7 @@
     
     <script>
         async function fetchData() {
-            const sheetUrl = 'https://script.google.com/macros/s/AKfycbxOhsgK0WVMcCyePDw4Ex30NwrdyaZYyIGSz1EVIoUkQDitcI2gogGDgF3NDIl-nYbR/exec'; // Replace with actual API
+            const sheetUrl = 'https://script.google.com/macros/s/AKfycbw3eH_sgCMeZu8DTTV6QevdE41ZY84hdCv_R2eTB3gCOHmYlS6KHzU3invCkV2RGY2i/exec'; // Replace with actual API
             const response = await fetch(sheetUrl);
             const data = await response.json();
             processDropdownData(data);
