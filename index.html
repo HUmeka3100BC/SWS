@@ -42,8 +42,8 @@
     </select>
 
     <label for="ahj">AHJ:</label>
-    <select id="ahj" onchange="displayNote()">
-        <option value="">Select AHJ</option>
+    <select id="ahj" onchange="displayNotes()">
+    <option value="">Select AHJ</option>
     </select>
     
     <label for="utility">Utility:</label>
@@ -147,12 +147,20 @@ function displayNotes() {
     const ahjDataItem = ahjData.find(item => item.ahj === selectedAHJ);
     const utilityDataItem = utilityData.find(item => item.utility === selectedUtility);
 
-    // Display AHJ Notes
+    // ✅ Display AHJ Notes
     if (ahjDataItem && ahjDataItem.ahjNote) {
         ahjDataItem.ahjNote.split("&").forEach(note => {
             displayFormattedNote(note);
         });
     }
+
+    // ✅ Display Utility Notes
+    if (utilityDataItem && utilityDataItem.utilityNote) {
+        utilityDataItem.utilityNote.split("&").forEach(note => {
+            displayFormattedNote(note);
+        });
+    }
+}
 
     // Display Utility Notes
     if (utilityDataItem && utilityDataItem.utilityNote) {
@@ -162,15 +170,6 @@ function displayNotes() {
     }
 }
 
-
-    const foundData = utilityData.find(item => item.utility === selectedUtility);
-
-    if (foundData && foundData.utilityNote) {
-        foundData.utilityNote.split("&").forEach(note => {
-            displayFormattedNote(note);
-        });
-    }
-}
 
 function displayFormattedNote(note) {
     let trimmedNote = note.trim();
