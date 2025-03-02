@@ -85,26 +85,31 @@
         let ahjData = [];
         let utilityData = [];
 
-        async function fetchData() {
-            const response = await fetch(sheetUrl);
-            const data = await response.json();
-            ahjData = data.ahjData;
-            utilityData = data.utilityData;
+async function fetchData() {
+    try {
+        console.log("Fetching data from Google Apps Script..."); // Debugging log
+        const response = await fetch(sheetUrl);
 
-            // Populate State Dropdown
-            const states = [...new Set([...ahjData.map(item => item.state), ...utilityData.map(item => item.state)])];
-            const stateDropdown = document.getElementById("state");
-
-            stateDropdown.innerHTML = '<option value="">Select State</option>';
-            states.forEach(state => {
-                let option = document.createElement("option");
-                option.value = state;
-                option.textContent = state;
-                stateDropdown.appendChild(option);
-            });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        fetchData();
+        const data = await response.json();
+        console.log("Data fetched successfully:", data); // Log fetched data
+
+        ahjData = data.ahjData || [];
+        utilityData = data.utilityData || [];
+
+        console.log("AHJ Data:", ahjData);
+        console.log("Utility Data:", utilityData);
+
+        populateStateDropdown();
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+fetchData();
 
         function updateAHJAndUtility() {
             const selectedState = document.getElementById("state").value;
