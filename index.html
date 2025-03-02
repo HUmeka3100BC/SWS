@@ -47,7 +47,7 @@
     </select>
 
     <label for="utility">Utility:</label>
-    <select id="utility" onchange="displayUtilityNote()">
+    <select id="utility" onchange="displayNotes()">
         <option value="">Select Utility</option>
     </select>
     
@@ -111,15 +111,23 @@ function updateAHJ() {
 
     const filteredData = allData.filter(item => item.state === selectedState);
 
+    // Populate AHJ Dropdown
     filteredData.forEach(item => {
-        let ahjOption = document.createElement("option");
-        ahjOption.value = item.ahj;
-        ahjOption.textContent = item.ahj;
-        ahjDropdown.appendChild(ahjOption);
+        if (item.ahj) {
+            let ahjOption = document.createElement("option");
+            ahjOption.value = item.ahj;
+            ahjOption.textContent = item.ahj;
+            ahjDropdown.appendChild(ahjOption);
+        }
+    });
 
+    // Populate Utility Dropdown (ensure it's not empty)
+    const uniqueUtilities = [...new Set(filteredData.map(item => item.utility).filter(utility => utility))];
+
+    uniqueUtilities.forEach(utility => {
         let utilityOption = document.createElement("option");
-        utilityOption.value = item.utility;
-        utilityOption.textContent = item.utility;
+        utilityOption.value = utility;
+        utilityOption.textContent = utility;
         utilityDropdown.appendChild(utilityOption);
     });
 }
@@ -138,16 +146,16 @@ function displayNotes() {
     const ahjData = allData.find(item => item.ahj === selectedAHJ);
     const utilityData = allData.find(item => item.utility === selectedUtility);
 
+    // Process AHJ Notes
     if (ahjData && ahjData.ahjNote) {
-        let ahjNotesArray = ahjData.ahjNote.split("&");
-        ahjNotesArray.forEach(note => {
+        ahjData.ahjNote.split("&").forEach(note => {
             displayFormattedNote(note);
         });
     }
 
-    if (utilityData && utilityData.utilityNote) {
-        let utilityNotesArray = utilityData.utilityNote.split("&");
-        utilityNotesArray.forEach(note => {
+    // Process Utility Notes (Only if Utility is Selected)
+    if (selectedUtility && utilityData && utilityData.utilityNote) {
+        utilityData.utilityNote.split("&").forEach(note => {
             displayFormattedNote(note);
         });
     }
