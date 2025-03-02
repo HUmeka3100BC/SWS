@@ -154,24 +154,24 @@
             for (let i = 1; i <= 9; i++) {
                 let section = document.getElementById(`pv0${i}-container`);
                 if (section) section.innerHTML = "";
-            }
+             }
 
-            // Find AHJ and Utility data
-            const ahjDataItem = ahjData.find(item => item.ahj === selectedAHJ);
-            const utilityDataItem = utilityData.find(item => item.utility === selectedUtility);
+    // ✅ Display AHJ Notes in Blue
+    const ahjDataItem = ahjData.find(item => item.ahj === selectedAHJ);
+    if (ahjDataItem && ahjDataItem.ahjNote) {
+        ahjDataItem.ahjNote.split("&").forEach(note => {
+            displayFormattedNote(note, "ahj"); // Pass "ahj" as type
+        });
+    }
 
-            if (ahjDataItem && ahjDataItem.ahjNote) {
-                ahjDataItem.ahjNote.split("&").forEach(note => {
-                    displayFormattedNote(note);
-                });
-            }
-
-            if (utilityDataItem && utilityDataItem.utilityNote) {
-                utilityDataItem.utilityNote.split("&").forEach(note => {
-                    displayFormattedNote(note);
-                });
-            }
-        }
+    // ✅ Display Utility Notes in Red
+    const utilityDataItem = utilityData.find(item => item.utility === selectedUtility);
+    if (utilityDataItem && utilityDataItem.utilityNote) {
+        utilityDataItem.utilityNote.split("&").forEach(note => {
+            displayFormattedNote(note, "utility"); // Pass "utility" as type
+        });
+    }
+}
 
         function displayFormattedNote(note) {
             let trimmedNote = note.trim();
@@ -195,6 +195,9 @@
                     let label = document.createElement("label");
                     label.textContent = labelText;
 
+                    label.style.color = (type === "ahj") ? "blue" : "red";
+
+                    
                     noteItem.appendChild(checkbox);
                     noteItem.appendChild(label);
 
