@@ -1,3 +1,4 @@
+index backup
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,11 +47,6 @@
         <option value="">Select AHJ</option>
     </select>
 
-    <label for="utility">Utility:</label>
-    <select id="utility" onchange="displayNotes()">
-        <option value="">Select Utility</option>
-    </select>
-    
     <!-- Sections for Notes -->
     <h3>PV01 - Cover Page:</h3>
     <div id="pv01-container" class="note-container"></div>
@@ -80,128 +76,98 @@
     <div id="pv09-container" class="note-container"></div>
 
     <script>
-        const sheetUrl = "https://script.google.com/macros/s/AKfycbzVsmbNNPxsYfLsNTfMQq7y0aVJ6X76N-rogI04i4B38jp-55TL3Wfh8ZRs9rBBEscb/exec"; // Replace with your deployed script URL
+        const sheetUrl = "https://script.google.com/macros/s/AKfycbybzOh2zN4xH1IxnLUVW6vt_1uV7axwb2XZ-dBAr0pbhJhtV7-H2v23SEcPBYm3chjg/exec"; // Replace with your deployed script URL
 
         let allData = [];
 
-async function fetchData() {
-    const response = await fetch(sheetUrl);
-    const data = await response.json();
-    allData = data;
+        async function fetchData() {
+            const response = await fetch(sheetUrl);
+            const data = await response.json();
+            allData = data;
 
-    const states = [...new Set(data.map(item => item.state))];
-    const stateDropdown = document.getElementById("state");
+            const states = [...new Set(data.map(item => item.state))];
+            const stateDropdown = document.getElementById("state");
 
-    states.forEach(state => {
-        let option = document.createElement("option");
-        option.value = state;
-        option.textContent = state;
-        stateDropdown.appendChild(option);
-    });
-}
-
-
-function updateAHJ() {
-    const selectedState = document.getElementById("state").value;
-    const ahjDropdown = document.getElementById("ahj");
-    const utilityDropdown = document.getElementById("utility");
-
-    ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
-    utilityDropdown.innerHTML = '<option value="">Select Utility</option>'; // Reset Utility Dropdown
-
-    const filteredData = allData.filter(item => item.state === selectedState);
-
-    // Populate AHJ Dropdown
-    filteredData.forEach(item => {
-        if (item.ahj) {
-            let ahjOption = document.createElement("option");
-            ahjOption.value = item.ahj;
-            ahjOption.textContent = item.ahj;
-            ahjDropdown.appendChild(ahjOption);
+            states.forEach(state => {
+                let option = document.createElement("option");
+                option.value = state;
+                option.textContent = state;
+                stateDropdown.appendChild(option);
+            });
         }
-    });
 
-    // Populate Utility Dropdown (ensure it's not empty)
-    const uniqueUtilities = [...new Set(filteredData.map(item => item.utility).filter(utility => utility))];
+        function updateAHJ() {
+            const selectedState = document.getElementById("state").value;
+            const ahjDropdown = document.getElementById("ahj");
 
-    uniqueUtilities.forEach(utility => {
-        let utilityOption = document.createElement("option");
-        utilityOption.value = utility;
-        utilityOption.textContent = utility;
-        utilityDropdown.appendChild(utilityOption);
-    });
-}
+            ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
 
+            const filteredAHJs = allData.filter(item => item.state === selectedState);
 
-function displayNotes() {
-    const selectedAHJ = document.getElementById("ahj").value;
-    const selectedUtility = document.getElementById("utility").value;
+            filteredAHJs.forEach(item => {
+                let option = document.createElement("option");
+                option.value = item.ahj;
+                option.textContent = item.ahj;
+                ahjDropdown.appendChild(option);
+            });
+        }
 
-    // Clear previous notes
-    for (let i = 1; i <= 9; i++) {
-        let section = document.getElementById(`pv0${i}-container`);
-        if (section) section.innerHTML = "";
-    }
-
-    const ahjData = allData.find(item => item.ahj === selectedAHJ);
-    const utilityData = allData.find(item => item.utility === selectedUtility);
-
-    // Process AHJ Notes
-    if (ahjData && ahjData.ahjNote) {
-        ahjData.ahjNote.split("&").forEach(note => {
-            displayFormattedNote(note);
-        });
-    }
-
-    // Process Utility Notes (Only if Utility is Selected)
-    if (selectedUtility && utilityData && utilityData.utilityNote) {
-        utilityData.utilityNote.split("&").forEach(note => {
-            displayFormattedNote(note);
-        });
-    }
-}
-
-function displayFormattedNote(note) {
-    let trimmedNote = note.trim();
-    let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detect URLs
-    let category = trimmedNote.match(/UPV\d+/); // Detect Utility PV Categories
-
-    if (category) {
-        let sectionId = category[0].toLowerCase().replace("upv", "pv") + "-container"; // Convert UPV01 → PV01
-        let section = document.getElementById(sectionId);
-
-        if (section) {
-            let noteItem = document.createElement("div");
-            noteItem.className = "note-item";
-
-            let checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-
-            // Remove PVXX: and URLs from the note
-            let labelText = trimmedNote.replace(/UPV\d+:/, "").trim();
-            labelText = labelText.replace(/(https?:\/\/[^\s]+)/, "").trim();
-
-            let label = document.createElement("label");
-            label.textContent = labelText;
-
-            noteItem.appendChild(checkbox);
-            noteItem.appendChild(label);
-
-            // If a URL is detected, add a help icon (without showing the URL)
-            if (urlMatch) {
-                let helpLink = document.createElement("a");
-                helpLink.href = urlMatch[0]; // Use the detected URL
-                helpLink.target = "_blank";
-                helpLink.className = "help-icon";
-                helpLink.innerHTML = "ℹ"; // Info icon
-                noteItem.appendChild(helpLink);
+        function displayNote() {
+            const selectedAHJ = document.getElementById("ahj").value;
+            
+            // Clear previous notes
+            for (let i = 1; i <= 9; i++) {
+                let section = document.getElementById(`pv0${i}-container`);
+                if (section) section.innerHTML = "";
             }
 
-            section.appendChild(noteItem);
-        }
-    }
-}
+            const foundData = allData.find(item => item.ahj === selectedAHJ);
 
+            if (foundData && foundData.note) {
+                let notesArray = foundData.note.split("&");
+
+                notesArray.forEach(note => {
+                    let trimmedNote = note.trim();
+                    let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detect URLs
+                    let category = trimmedNote.match(/PV\d+/);
+
+                    if (category) {
+                        let sectionId = category[0].toLowerCase() + "-container";
+                        let section = document.getElementById(sectionId);
+
+                        if (section) {
+                            let noteItem = document.createElement("div");
+                            noteItem.className = "note-item";
+
+                            let checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+
+                            // Remove PVXX: and URLs from the note
+                            let labelText = trimmedNote.replace(/PV\d+:/, "").trim();
+                            labelText = labelText.replace(/(https?:\/\/[^\s]+)/, "").trim();
+
+                            let label = document.createElement("label");
+                            label.textContent = labelText;
+
+                            noteItem.appendChild(checkbox);
+                            noteItem.appendChild(label);
+
+                            // If a URL is detected, add a help icon (without showing the URL)
+                            if (urlMatch) {
+                                let helpLink = document.createElement("a");
+                                helpLink.href = urlMatch[0]; // Use the detected URL
+                                helpLink.target = "_blank";
+                                helpLink.className = "help-icon";
+                                helpLink.innerHTML = "ℹ"; // Info icon
+                                noteItem.appendChild(helpLink);
+                            }
+
+                            section.appendChild(noteItem);
+                        }
+                    }
+                });
+            }
+        }
 
         fetchData();
     </script>
