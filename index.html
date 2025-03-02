@@ -195,7 +195,12 @@
                     let label = document.createElement("label");
                     label.textContent = labelText;
 
-                    label.style.color = (type === "ahj") ? "blue" : "red";
+                    // ✅ Apply different colors based on type
+                    if (type === "ahj") {
+                        label.style.color = "blue"; // AHJ Notes in Blue 🔵
+                    } else if (type === "utility") {
+                        label.style.color = "red"; // Utility Notes in Red 🔴
+                    }
 
                     
                     noteItem.appendChild(checkbox);
