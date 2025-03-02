@@ -129,12 +129,80 @@
             });
         }
 
-        function displayNotes() {
-            // Same function as before
-        }
+function displayNotes() {
+    const selectedAHJ = document.getElementById("ahj").value;
+    const selectedUtility = document.getElementById("utility").value;
 
-        function displayFormattedNote(note) {
-            // Same function as before
+    // Clear previous notes
+    for (let i = 1; i <= 9; i++) {
+        let section = document.getElementById(`pv0${i}-container`);
+        if (section) section.innerHTML = "";
+    }
+
+    // Find AHJ and Utility data
+    const ahjDataItem = ahjData.find(item => item.ahj === selectedAHJ);
+    const utilityDataItem = utilityData.find(item => item.utility === selectedUtility);
+
+    // ✅ Display AHJ Notes
+    if (ahjDataItem && ahjDataItem.ahjNote) {
+        ahjDataItem.ahjNote.split("&").forEach(note => {
+            displayFormattedNote(note);
+        });
+    } else {
+        console.warn("No AHJ notes found for:", selectedAHJ);
+    }
+
+    // ✅ Display Utility Notes
+    if (utilityDataItem && utilityDataItem.utilityNote) {
+        utilityDataItem.utilityNote.split("&").forEach(note => {
+            displayFormattedNote(note);
+        });
+    } else {
+        console.warn("No Utility notes found for:", selectedUtility);
+    }
+}
+
+        }
+function displayFormattedNote(note) {
+    let trimmedNote = note.trim();
+    let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/); // Detect URLs
+    let category = trimmedNote.match(/(UPV\d+|PV\d+)/); // Detect PV category
+
+    if (category) {
+        let sectionId = category[0].toLowerCase().replace("upv", "pv") + "-container"; // Convert UPV01 → PV01
+        let section = document.getElementById(sectionId);
+
+        if (section) {
+            let noteItem = document.createElement("div");
+            noteItem.className = "note-item";
+
+            let checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+
+            let labelText = trimmedNote.replace(/(UPV\d+:|PV\d+:)/, "").trim(); // Remove PV labels
+            labelText = labelText.replace(/(https?:\/\/[^\s]+)/, "").trim(); // Remove URL from text
+
+            let label = document.createElement("label");
+            label.textContent = labelText;
+
+            noteItem.appendChild(checkbox);
+            noteItem.appendChild(label);
+
+            // ✅ Convert URL to Help Icon
+            if (urlMatch) {
+                let helpLink = document.createElement("a");
+                helpLink.href = urlMatch[0];
+                helpLink.target = "_blank";
+                helpLink.className = "help-icon";
+                helpLink.innerHTML = "ℹ"; // Info icon
+                noteItem.appendChild(helpLink);
+            }
+
+            section.appendChild(noteItem);
+        }
+    }
+}
+
         }
     </script>
 
