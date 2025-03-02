@@ -87,23 +87,27 @@
         let ahjData = [];
         let utilityData = [];
 
-    async function fetchData() {
-        const response = await fetch(sheetUrl);
-        const data = await response.json();
-        ahjData = data.ahjData;
-        utilityData = data.utilityData;
+ async function fetchData() {
+    const response = await fetch(sheetUrl);
+    const data = await response.json();
+    ahjData = data.ahjData;
+    utilityData = data.utilityData;
 
-        // Populate State Dropdown
-        const states = [...new Set([...ahjData.map(item => item.state), ...utilityData.map(item => item.state)])];
-        const stateDropdown = document.getElementById("state");
+    // Populate State Dropdown
+    const states = [...new Set([...ahjData.map(item => item.state), ...utilityData.map(item => item.state)])];
+    const stateDropdown = document.getElementById("state");
 
-        states.forEach(state => {
-            let option = document.createElement("option");
-            option.value = state;
-            option.textContent = state;
-            stateDropdown.appendChild(option);
+    states.forEach(state => {
+        let option = document.createElement("option");
+        option.value = state;
+        option.textContent = state;
+        stateDropdown.appendChild(option);
     });
 }
+
+// ✅ Ensure the function runs
+fetchData();
+
 
 
 function updateAHJ() {
@@ -112,26 +116,33 @@ function updateAHJ() {
     const utilityDropdown = document.getElementById("utility");
 
     ahjDropdown.innerHTML = '<option value="">Select AHJ</option>';
-    utilityDropdown.innerHTML = '<option value="">Select Utility</option>'; // Reset Utility Dropdown
+    utilityDropdown.innerHTML = '<option value="">Select Utility</option>';
 
     const filteredAHJs = ahjData.filter(item => item.state === selectedState);
     const filteredUtilities = utilityData.filter(item => item.state === selectedState);
 
-    filteredAHJs.forEach(item => {
-        let option = document.createElement("option");
-        option.value = item.ahj;
-        option.textContent = item.ahj;
-        ahjDropdown.appendChild(option);
-    });
+    if (filteredAHJs.length === 0) {
+        ahjDropdown.innerHTML += '<option value="">No AHJ Available</option>';
+    } else {
+        filteredAHJs.forEach(item => {
+            let option = document.createElement("option");
+            option.value = item.ahj;
+            option.textContent = item.ahj;
+            ahjDropdown.appendChild(option);
+        });
+    }
 
-    filteredUtilities.forEach(item => {
-        let option = document.createElement("option");
-        option.value = item.utility;
-        option.textContent = item.utility;
-        utilityDropdown.appendChild(option);
-    });
+    if (filteredUtilities.length === 0) {
+        utilityDropdown.innerHTML += '<option value="">No Utility Available</option>';
+    } else {
+        filteredUtilities.forEach(item => {
+            let option = document.createElement("option");
+            option.value = item.utility;
+            option.textContent = item.utility;
+            utilityDropdown.appendChild(option);
+        });
+    }
 }
-
 
 function displayNotes() {
     const selectedAHJ = document.getElementById("ahj").value;
@@ -154,15 +165,7 @@ function displayNotes() {
         });
     }
 
-    // ✅ Display Utility Notes
-    if (utilityDataItem && utilityDataItem.utilityNote) {
-        utilityDataItem.utilityNote.split("&").forEach(note => {
-            displayFormattedNote(note);
-        });
-    }
-}
-
-    // Display Utility Notes
+    // ✅ Display Utility Notes (THIS IS NEEDED!)
     if (utilityDataItem && utilityDataItem.utilityNote) {
         utilityDataItem.utilityNote.split("&").forEach(note => {
             displayFormattedNote(note);
