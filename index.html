@@ -47,9 +47,10 @@
     </select>
     
     <label for="utility">Utility:</label>
-    <select id="utility" onchange="displayUtilityNotes()">
+    <select id="utility" onchange="displayNotes()">
         <option value="">Select Utility</option>
     </select>
+
 
 
     <!-- Sections for Notes -->
@@ -132,32 +133,35 @@ function updateAHJ() {
 }
 
 
-function displayNote() {
+function displayNotes() {
     const selectedAHJ = document.getElementById("ahj").value;
-    
+    const selectedUtility = document.getElementById("utility").value;
+
     // Clear previous notes
     for (let i = 1; i <= 9; i++) {
         let section = document.getElementById(`pv0${i}-container`);
         if (section) section.innerHTML = "";
     }
 
-    const foundData = ahjData.find(item => item.ahj === selectedAHJ);
+    // Find AHJ and Utility data
+    const ahjDataItem = ahjData.find(item => item.ahj === selectedAHJ);
+    const utilityDataItem = utilityData.find(item => item.utility === selectedUtility);
 
-    if (foundData && foundData.ahjNote) {
-        foundData.ahjNote.split("&").forEach(note => {
+    // Display AHJ Notes
+    if (ahjDataItem && ahjDataItem.ahjNote) {
+        ahjDataItem.ahjNote.split("&").forEach(note => {
+            displayFormattedNote(note);
+        });
+    }
+
+    // Display Utility Notes
+    if (utilityDataItem && utilityDataItem.utilityNote) {
+        utilityDataItem.utilityNote.split("&").forEach(note => {
             displayFormattedNote(note);
         });
     }
 }
 
-function displayUtilityNotes() {
-    const selectedUtility = document.getElementById("utility").value;
-    
-    // Clear previous utility notes
-    for (let i = 1; i <= 9; i++) {
-        let section = document.getElementById(`pv0${i}-container`);
-        if (section) section.innerHTML = "";
-    }
 
     const foundData = utilityData.find(item => item.utility === selectedUtility);
 
