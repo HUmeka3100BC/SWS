@@ -173,7 +173,7 @@
     }
 }
 
-        function displayFormattedNote(note) {
+        function displayFormattedNote(note, type) {
             let trimmedNote = note.trim();
             let urlMatch = trimmedNote.match(/(https?:\/\/[^\s]+)/);
             let category = trimmedNote.match(/(UPV\d+|PV\d+)/);
