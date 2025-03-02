@@ -122,8 +122,9 @@
 
             const foundData = allData.find(item => item.ahj === selectedAHJ);
 
-            if (foundData && foundData.note) {
-                let notesArray = foundData.note.split("&");
+            if (foundData && foundData.ahjNote) {
+                let notesArray = foundData.ahjNote.split("&");
+
 
                 notesArray.forEach(note => {
                     let trimmedNote = note.trim();
