@@ -5,12 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dropdown from Google Sheets</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        select, div { margin-top: 10px; }
-        .note-container { margin-top: 10px; }
-        .note-item { display: flex; align-items: center; margin-bottom: 5px; }
-        .note-item input { margin-right: 5px; }
-   
+        /* 🌙 Always Dark Mode */
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212; /* Dark background */
+            color: #ffffff; /* Light text */
+        }
+
+        /* Dropdown Styling */
+        select {
+            background: #1e1e1e;
+            color: #ffffff;
+            border: 1px solid #444;
+            padding: 5px;
+        }
+        /* 🔵 AHJ Dropdown - Blue */
+        #ahj {
+        background: #0057ff;  /* Blue background */
+        color: white;          /* White text */
+        border: 1px solid #003bb3; /* Darker blue border */
+        }
+
+        /* 🔴 Utility Dropdown - Red */
+        #utility {
+        background: #ff3b30;  /* Red background */
+        color: white;         /* White text */
+        border: 1px solid #b22222; /* Darker red border */
+}
+
+        
+        /* Note Containers */
+        .note-container {
+            margin-top: 10px;
+        }
+
+        .note-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .note-item input {
+            margin-right: 5px;
+        }
+
         /* Help Icon Styling */
         .help-icon {
             display: inline-flex;
